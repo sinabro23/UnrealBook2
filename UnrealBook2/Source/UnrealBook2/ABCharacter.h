@@ -37,7 +37,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	virtual void PostInitializeComponents() override;
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -47,6 +47,12 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class USpringArmComponent* SpringArm;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attack")
+	bool bIsAttacking;
+
+	UPROPERTY()
+	class UABAnimInstance* ABAnim;
+
 private:
 	void UpDown(float Value);
 	void LeftRight(float Value);
@@ -54,4 +60,11 @@ private:
 	void LookUp(float Value);
 
 	void ViewChange();
+
+	void Attack();
+
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+
 };
