@@ -25,6 +25,8 @@ public:
 
 	UFUNCTION()
 	void AnimNotify_AttackHitCheck();
+
+	void SetDeadAnim();
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed;
@@ -35,6 +37,8 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool bIsDead;
 
 public:
 	FOnAttackHitCheckDelegate OnAttackHitCheck;

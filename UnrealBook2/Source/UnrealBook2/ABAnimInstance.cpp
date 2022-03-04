@@ -9,7 +9,7 @@ UABAnimInstance::UABAnimInstance()
 {
 	CurrentPawnSpeed = 0.f;
 	bIsInAir = false;
-
+	bIsDead = false;
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("AnimMontage'/Game/_Game/Animations/SK_Mannequin_Skeleton_Montage.SK_Mannequin_Skeleton_Montage'"));
 	
 
@@ -21,15 +21,13 @@ UABAnimInstance::UABAnimInstance()
 
 void UABAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
-	//Super::NativeUpdateAnimation(DeltaSeconds);
-	//AABCharacter* Character = Cast<AABCharacter>(TryGetPawnOwner());
-	//if (Character)
-	//{
-	//	CurrentPawnSpeed = Character->GetVelocity().Size();
-	//}
+	Super::NativeUpdateAnimation(DeltaSeconds);
 
 	auto Pawn = TryGetPawnOwner();
-	if (::IsValid(Pawn))
+	if (!::IsValid(Pawn))
+		return;
+
+	if(!bIsDead)
 	{
 		CurrentPawnSpeed = Pawn->GetVelocity().Size();
 		auto Character = Cast<AABCharacter>(Pawn);
@@ -42,11 +40,15 @@ void UABAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UABAnimInstance::PlayAttackMontage()
 {
+	if (bIsDead)
+		return;
 	Montage_Play(AttackMontage, 1.f);
 }
 
 void UABAnimInstance::JumpToSection(int32 MontageSection)
 {
+	if (bIsDead)
+		return;
 	FName Name = GetAttackMontageName(MontageSection);
 	Montage_JumpToSection(Name, AttackMontage);
 }
@@ -61,4 +63,9 @@ void UABAnimInstance::AnimNotify_AttackHitCheck()
 {
 	UE_LOG(LogTemp, Warning, TEXT("AttackHit"));
 	OnAttackHitCheck.Broadcast(); // 이때 어택 히트를 체크하라고 알려주는것
+}
+
+void UABAnimInstance::SetDeadAnim()
+{
+	bIsDead = true;
 }
