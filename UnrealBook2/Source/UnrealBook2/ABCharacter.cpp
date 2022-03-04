@@ -6,7 +6,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ABAnimInstance.h"
-
+#include "Components/CapsuleComponent.h"
+#include "DrawDebugHelpers.h"
 // Sets default values
 AABCharacter::AABCharacter()
 {
@@ -44,6 +45,12 @@ AABCharacter::AABCharacter()
 
 	GetCharacterMovement()->JumpZVelocity = 800.f;
 	bIsAttacking = false;
+
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("ABCharacter")); 
+
+	AttackRange = 200.f;
+	AttackRadius = 50.f;
+	
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +58,13 @@ void AABCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+float AABCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	UE_LOG(LogTemp, Warning, TEXT("Actor %s took Damage %f"), *GetName(), FinalDamage);
+	return FinalDamage;
 }
 
 void AABCharacter::SetControlMode(EControlMode ControlMode)
@@ -129,6 +143,7 @@ void AABCharacter::PostInitializeComponents()
 	if (ABAnim)
 	{
 		ABAnim->OnMontageEnded.AddDynamic(this, &AABCharacter::OnAttackMontageEnded);
+		ABAnim->OnAttackHitCheck.AddUObject(this, &AABCharacter::AttackHitCheck);
 	}
 }
 
@@ -223,8 +238,52 @@ void AABCharacter::Attack()
 		return;
 
 	ABAnim->PlayAttackMontage();
+	ABAnim->JumpToSection(AttackSectionIndex);
+
+	AttackSectionIndex = (AttackSectionIndex + 1) % 4;
+
+	
 	
 	bIsAttacking = true;
+}
+
+void AABCharacter::AttackHitCheck()
+{
+	FHitResult HitResult;
+	FCollisionQueryParams Params(NAME_None, false, this);
+
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		HitResult,
+		GetActorLocation(),
+		GetActorLocation() + GetActorForwardVector() * AttackRange,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel2, 
+		FCollisionShape::MakeSphere(AttackRadius),
+		Params);
+
+#if ENABLE_DRAW_DEBUG
+
+	FVector TraceVec = GetActorForwardVector() * AttackRange;
+	FVector Center = GetActorLocation() + TraceVec * 0.5f;
+	float HalfHeight = AttackRange * 0.5f + AttackRadius;  // ?
+	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat(); // ?
+	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+	float DebugLifeTime = 5.f;
+	DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRot, DrawColor, false, DebugLifeTime);
+#endif
+
+	if (bResult)
+	{
+		if (HitResult.Actor.IsValid())
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
+			
+			FDamageEvent DamageEvent;
+			HitResult.Actor->TakeDamage(50.f, DamageEvent, GetController(), this);
+		}
+	}
+
+
 }
 
 void AABCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

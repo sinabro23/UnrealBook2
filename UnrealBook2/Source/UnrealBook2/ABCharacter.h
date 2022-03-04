@@ -24,6 +24,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 	void SetControlMode(EControlMode ControlMode); // 인칭 변환을 위함
 	EControlMode CurrentControlMode = EControlMode::GTA;
@@ -33,6 +34,8 @@ protected:
 	FRotator ArmRotationTo = FRotator::ZeroRotator;
 	float ArmLengthSpeed = 0.f;
 	float ArmRotationSpeed = 0.f;
+
+
 
 public:	
 	// Called every frame
@@ -51,6 +54,9 @@ public:
 	bool bIsAttacking;
 
 	UPROPERTY()
+	int32 AttackSectionIndex = 0;
+
+	UPROPERTY()
 	class UABAnimInstance* ABAnim;
 
 private:
@@ -64,7 +70,16 @@ private:
 	void Attack();
 
 	UFUNCTION()
-	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	void AttackHitCheck(); //애님노티파이에서 타이밍 알려줌
 
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted); 
 
+	
+private:
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	float AttackRange;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
+	float AttackRadius;
 };

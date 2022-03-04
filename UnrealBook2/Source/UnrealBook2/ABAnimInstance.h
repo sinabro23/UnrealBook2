@@ -9,6 +9,7 @@
 /**
  * 
  */
+DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate)
 UCLASS()
 class UNREALBOOK2_API UABAnimInstance : public UAnimInstance
 {
@@ -19,7 +20,11 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	void PlayAttackMontage();
+	void JumpToSection(int32 MontageSection);
+	FName GetAttackMontageName(int32 MontageSection);
 
+	UFUNCTION()
+	void AnimNotify_AttackHitCheck();
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed;
@@ -30,4 +35,7 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
 	
+
+public:
+	FOnAttackHitCheckDelegate OnAttackHitCheck;
 };

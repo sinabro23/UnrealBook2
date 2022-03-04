@@ -44,3 +44,21 @@ void UABAnimInstance::PlayAttackMontage()
 {
 	Montage_Play(AttackMontage, 1.f);
 }
+
+void UABAnimInstance::JumpToSection(int32 MontageSection)
+{
+	FName Name = GetAttackMontageName(MontageSection);
+	Montage_JumpToSection(Name, AttackMontage);
+}
+
+FName UABAnimInstance::GetAttackMontageName(int32 MontageSection)
+{
+	return FName(*FString::Printf(TEXT("Attack%d"), MontageSection));
+}
+
+
+void UABAnimInstance::AnimNotify_AttackHitCheck()
+{
+	UE_LOG(LogTemp, Warning, TEXT("AttackHit"));
+	OnAttackHitCheck.Broadcast(); // 이때 어택 히트를 체크하라고 알려주는것
+}
