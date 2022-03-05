@@ -65,6 +65,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Waepon)
 	class AABWeapon* CurrentWeapon;
 
+	UPROPERTY(VisibleAnywhere, Category = Stat)
+	class UABStatComponent* CharacterStat;
+
 public:
 	void UpDown(float Value);
 	void LeftRight(float Value);

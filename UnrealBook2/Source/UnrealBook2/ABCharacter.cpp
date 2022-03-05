@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
 #include "ABWeapon.h"
+#include "ABStatComponent.h"
 // Sets default values
 AABCharacter::AABCharacter()
 {
@@ -52,6 +53,8 @@ AABCharacter::AABCharacter()
 	AttackRange = 200.f;
 	AttackRadius = 50.f;
 
+	CharacterStat = CreateDefaultSubobject<UABStatComponent>(TEXT("CHARACTERSTAT"));
+	
 }
 
 // Called when the game starts or when spawned
@@ -65,11 +68,7 @@ float AABCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	UE_LOG(LogTemp, Warning, TEXT("Actor %s took Damage %f"), *GetName(), FinalDamage);
-	if (FinalDamage > 0.f)
-	{
-		ABAnim->SetDeadAnim();
-		SetActorEnableCollision(false);
-	}
+	CharacterStat->SetDamage(FinalDamage);
 	return FinalDamage;
 }
 
@@ -151,6 +150,12 @@ void AABCharacter::PostInitializeComponents()
 		ABAnim->OnMontageEnded.AddDynamic(this, &AABCharacter::OnAttackMontageEnded);
 		ABAnim->OnAttackHitCheck.AddUObject(this, &AABCharacter::AttackHitCheck);
 	}
+
+	CharacterStat->OnHPIsZero.AddLambda([this]() -> void {
+		UE_LOG(LogTemp, Warning, TEXT("HPISZERO"));
+		ABAnim->SetDeadAnim();
+		SetActorEnableCollision(false);
+	});
 }
 
 // Called to bind functionality to input
@@ -285,7 +290,7 @@ void AABCharacter::AttackHitCheck()
 			//UE_LOG(LogTemp, Warning, TEXT("HIT ACTOR :%s"), *HitResult.Actor->GetName());
 			
 			FDamageEvent DamageEvent;
-			HitResult.Actor->TakeDamage(50.f, DamageEvent, GetController(), this);
+			HitResult.Actor->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
 		}
 	}
 
