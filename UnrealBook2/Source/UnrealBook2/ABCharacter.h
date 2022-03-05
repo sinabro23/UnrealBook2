@@ -9,7 +9,8 @@
 enum class EControlMode
 {
 	GTA,
-	DIABLO
+	DIABLO,
+	NPC
 };
 
 UCLASS()
@@ -43,7 +44,7 @@ public:
 	virtual void PostInitializeComponents() override;
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	virtual void PossessedBy(AController* NewController)override;
 public:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class UCameraComponent* Camera;
