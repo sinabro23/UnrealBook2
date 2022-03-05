@@ -49,6 +49,8 @@ public:
 	UABGameInstance();
 
 	void Init() override;
+	virtual void Shutdown() override;
+	virtual void StartGameInstance() override;
 
 	FABCharacterData* GetABCharacterData(int32 Level);
 

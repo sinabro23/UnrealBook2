@@ -18,6 +18,16 @@ void UABGameInstance::Init()
 	Super::Init();
 }
 
+void UABGameInstance::Shutdown()
+{
+	Super::Shutdown();
+}
+
+void UABGameInstance::StartGameInstance()
+{
+	Super::StartGameInstance();
+}
+
 FABCharacterData* UABGameInstance::GetABCharacterData(int32 Level)
 {
 	return CharacterDataTable->FindRow<FABCharacterData>(*FString::FromInt(Level), TEXT(""));
