@@ -17,12 +17,15 @@ class UNREALBOOK2_API AABAIController : public AAIController
 public:
 	AABAIController();
 
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnUnPossess() override;
+
 	static const FName HomePosKey;
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
 
-	virtual void OnPossess(APawn* InPawn) override;
-	virtual void OnUnPossess() override;
+	void RunAI();
+	void StopAI();
 	
 private:
 
