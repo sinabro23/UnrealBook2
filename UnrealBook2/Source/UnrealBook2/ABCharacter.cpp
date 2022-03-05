@@ -10,6 +10,8 @@
 #include "DrawDebugHelpers.h"
 #include "ABWeapon.h"
 #include "ABStatComponent.h"
+#include "Components/WidgetComponent.h"
+
 // Sets default values
 AABCharacter::AABCharacter()
 {
@@ -55,6 +57,19 @@ AABCharacter::AABCharacter()
 
 	CharacterStat = CreateDefaultSubobject<UABStatComponent>(TEXT("CHARACTERSTAT"));
 	
+	HPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBAR"));
+	HPBarWidget->SetupAttachment(GetMesh());
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBAR(TEXT("WidgetBlueprint'/Game/_Game/UI/UI_HPBar.UI_HPBar_C'"));
+	if (UI_HPBAR.Succeeded())
+	{
+		HPBarWidget->SetWidgetClass(UI_HPBAR.Class);
+		HPBarWidget->SetDrawSize(FVector2D(150.f, 50.f));
+	}
+
+	HPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	HPBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 200.f));
+
 }
 
 // Called when the game starts or when spawned
