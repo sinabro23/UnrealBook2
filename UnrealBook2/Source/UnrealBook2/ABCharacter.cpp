@@ -8,6 +8,7 @@
 #include "ABAnimInstance.h"
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
+#include "ABWeapon.h"
 // Sets default values
 AABCharacter::AABCharacter()
 {
@@ -50,7 +51,7 @@ AABCharacter::AABCharacter()
 
 	AttackRange = 200.f;
 	AttackRadius = 50.f;
-	
+
 }
 
 // Called when the game starts or when spawned
@@ -294,6 +295,25 @@ void AABCharacter::AttackHitCheck()
 void AABCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	bIsAttacking = false;
+}
+
+bool AABCharacter::CanSetWeapon()
+{
+	return (CurrentWeapon == nullptr);
+}
+
+void AABCharacter::SetWeapon(AABWeapon* NewWeapon)
+{
+	if (!CanSetWeapon() && NewWeapon == nullptr)
+		return;
+
+	FName WeaponSocket(TEXT("hand_r_socket"));
+	if (NewWeapon)
+	{
+		NewWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, WeaponSocket);
+		NewWeapon->SetOwner(this);
+		CurrentWeapon = NewWeapon;
+	}
 }
 
 

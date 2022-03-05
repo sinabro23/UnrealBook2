@@ -59,7 +59,13 @@ public:
 	UPROPERTY()
 	class UABAnimInstance* ABAnim;
 
-private:
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	USkeletalMeshComponent* Weapon;
+
+	UPROPERTY(VisibleAnywhere, Category = Waepon)
+	class AABWeapon* CurrentWeapon;
+
+public:
 	void UpDown(float Value);
 	void LeftRight(float Value);
 	void Turn(float Value);
@@ -75,6 +81,9 @@ private:
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted); 
 
+	bool CanSetWeapon();
+
+	void SetWeapon(class AABWeapon* NewWeapon);
 	
 private:
 
