@@ -6,7 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "ABStatComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnHPIsZero)
+DECLARE_MULTICAST_DELEGATE(FOnHPIsZero);
+DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate);
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UNREALBOOK2_API UABStatComponent : public UActorComponent
 {
@@ -25,6 +26,8 @@ public:
 	void SetNewLevel(int32 NewLevel); // 이 함수를 통해서만 스탯변화를 가져올 수 있게.(레벨업)
 	float GetAttack();
 	void SetDamage(float NewDamage);
+	void SetHP(float NewHP);
+	float GetHPRatio();
 
 private:
 	struct FABCharacterData* CurrentStatData = nullptr;
@@ -37,4 +40,5 @@ private:
 
 public:
 	FOnHPIsZero OnHPIsZero;
+	FOnHPChangedDelegate OnHPChanged;
 };

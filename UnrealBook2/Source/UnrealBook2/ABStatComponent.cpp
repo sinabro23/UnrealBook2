@@ -64,12 +64,23 @@ void UABStatComponent::SetDamage(float NewDamage)
 	if (!CurrentStatData)
 		return;
 
-	CurrentHP = FMath::Clamp(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHp);
-	if (CurrentHP <= 0.f)
+	float NewHP = FMath::Clamp(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHp);
+	SetHP(NewHP);
+}
+
+void UABStatComponent::SetHP(float NewHP)
+{
+	CurrentHP = NewHP;
+	OnHPChanged.Broadcast();
+	if (CurrentHP < KINDA_SMALL_NUMBER)
 	{
+		CurrentHP = 0.f;
 		OnHPIsZero.Broadcast();
 	}
 }
 
-
+float UABStatComponent::GetHPRatio()
+{
+	return CurrentHP / (float)CurrentStatData->MaxHp;
+}
 
