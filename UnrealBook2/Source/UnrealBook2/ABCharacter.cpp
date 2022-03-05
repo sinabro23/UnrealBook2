@@ -348,6 +348,7 @@ void AABCharacter::AttackHitCheck()
 void AABCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	bIsAttacking = false;
+	OnAttackEnd.Broadcast();
 }
 
 bool AABCharacter::CanSetWeapon()

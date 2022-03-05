@@ -6,12 +6,15 @@
 #include "GameFramework/Character.h"
 #include "ABCharacter.generated.h"
 
+
 enum class EControlMode
 {
 	GTA,
 	DIABLO,
 	NPC
 };
+
+DECLARE_MULTICAST_DELEGATE(FOnAttackEndedDelegate);
 
 UCLASS()
 class UNREALBOOK2_API AABCharacter : public ACharacter
@@ -97,4 +100,7 @@ private:
 	float AttackRange;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	float AttackRadius;
+
+public:
+	FOnAttackEndedDelegate OnAttackEnd;
 };
