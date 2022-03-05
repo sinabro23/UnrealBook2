@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/DataTable.h"
 #include "Engine/GameInstance.h"
+#include "Engine/StreamableManager.h"
 #include "ABGameInstance.generated.h"
 
 /**
@@ -53,6 +54,8 @@ public:
 	virtual void StartGameInstance() override;
 
 	FABCharacterData* GetABCharacterData(int32 Level);
+
+	FStreamableManager StreamableManager;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Data)

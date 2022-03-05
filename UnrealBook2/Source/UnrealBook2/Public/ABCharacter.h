@@ -101,6 +101,13 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = "Attack", Meta = (AllowPrivateAccess = true))
 	float AttackRadius;
 
+	void OnAssetLoadCompleted();
+
+private:
+
+	FSoftObjectPath CharacterAssetToLoad = FSoftObjectPath(nullptr);
+	TSharedPtr<struct FStreamableHandle> AssetStreamingHandle;
+
 public:
 	FOnAttackEndedDelegate OnAttackEnd;
 };

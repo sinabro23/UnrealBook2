@@ -9,6 +9,6 @@ public class UnrealBook2Target : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "UnrealBook2" } );
+		ExtraModuleNames.AddRange( new string[] { "UnrealBook2", "ArenaBattleSetting" } );
 	}
 }
